@@ -9,6 +9,11 @@ venv/
 *.so
 *.yaml
 *.sh
+!tools/cfgs/dataset_configs/xmu/xmu_dataset_source_mix.yaml
+!tools/cfgs/xmu_da_models/centerpoint_source_mix.yaml
+!tools/cfgs/xmu_da_models/centerpoint_robosense_test.yaml
+!tools/scripts/train_cmd_da.sh
+!tools/scripts/infer_cmd_test.sh
 *.pth
 *.pkl
 *.zip

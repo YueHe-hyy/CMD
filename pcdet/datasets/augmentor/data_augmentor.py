@@ -113,6 +113,56 @@ class DataAugmentor(object):
         data_dict['noise_scale'] = noise_scale
         return data_dict
 
+    def random_lidar_sparsification(self, data_dict=None, config=None):
+        """Simulate lower-density/non-uniform target LiDAR sampling.
+
+        CMD source sensors have very different scan patterns from the hidden
+        solid-state target.  This augmentation removes complete elevation
+        bands and then applies range-aware point dropout, while leaving labels
+        unchanged.  It intentionally runs before voxelization.
+        """
+        if data_dict is None:
+            return partial(self.random_lidar_sparsification, config=config)
+
+        points = data_dict['points']
+        probability = float(config.get('PROBABILITY', 0.8))
+        min_points = int(config.get('MIN_POINTS', 1024))
+        if points.shape[0] <= min_points or np.random.random() > probability:
+            return data_dict
+
+        keep_ratio = np.random.uniform(*config.get('KEEP_RATIO', [0.45, 0.85]))
+        beam_keep_ratio = np.random.uniform(*config.get('BEAM_KEEP_RATIO', [0.35, 0.85]))
+
+        horizontal_range = np.linalg.norm(points[:, :2], axis=1)
+        elevation = np.arctan2(points[:, 2], np.maximum(horizontal_range, 1e-3))
+        num_bins = int(config.get('ELEVATION_BINS', 128))
+        elev_min, elev_max = elevation.min(), elevation.max()
+        if elev_max > elev_min:
+            beam_ids = np.clip(
+                ((elevation - elev_min) / (elev_max - elev_min) * num_bins).astype(np.int32),
+                0, num_bins - 1
+            )
+            occupied_beams = np.unique(beam_ids)
+            num_keep_beams = max(1, int(len(occupied_beams) * beam_keep_ratio))
+            kept_beams = np.random.choice(occupied_beams, num_keep_beams, replace=False)
+            beam_mask = np.isin(beam_ids, kept_beams)
+        else:
+            beam_mask = np.ones(points.shape[0], dtype=np.bool_)
+
+        max_range = max(float(horizontal_range.max()), 1.0)
+        far_keep_scale = float(config.get('FAR_KEEP_SCALE', 0.65))
+        point_probability = keep_ratio * (1.0 - (1.0 - far_keep_scale) * horizontal_range / max_range)
+        keep_mask = beam_mask & (np.random.random(points.shape[0]) < point_probability)
+        if keep_mask.sum() < min_points:
+            candidate = np.flatnonzero(beam_mask)
+            if candidate.size < min_points:
+                candidate = np.arange(points.shape[0])
+            selected = np.random.choice(candidate, min(min_points, candidate.size), replace=False)
+            keep_mask[selected] = True
+
+        data_dict['points'] = points[keep_mask]
+        return data_dict
+
     def random_image_flip(self, data_dict=None, config=None):
         if data_dict is None:
             return partial(self.random_image_flip, config=config)

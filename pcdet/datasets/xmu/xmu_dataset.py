@@ -78,23 +78,48 @@ class XMechanismUnmanned(DatasetTemplate):
         if self.logger is not None:
             self.logger.info('Loading XMU dataset of sensor %s and mode %s'%(self.sensor, mode))
         xmu_infos = []
+        missing_info_paths = []
         for info_path in self.dataset_cfg.INFO_PATH[mode]:
             info_path = self.root_path / info_path
             if info_path is None or not Path(info_path).exists():
-                self.logger.info('Info file %s not exists.'%info_path)
+                missing_info_paths.append(str(info_path))
+                if self.logger is not None:
+                    self.logger.info('Info file %s not exists.'%info_path)
                 continue
             with open(info_path, 'rb') as f:
-                xmu_infos.extend(pickle.load(f))
+                cur_infos = pickle.load(f)
+            # Old CMD info files do not record their source sensor.  Infer it
+            # from the filename so multiple labelled source domains can be
+            # mixed in one training dataloader.
+            info_name = info_path.name.lower()
+            inferred_sensor = next(
+                (name for name in ('ouster', 'hesai', 'robosense', 'gpal') if name in info_name),
+                None
+            )
+            if inferred_sensor is not None:
+                for info in cur_infos:
+                    info.setdefault('sensor', inferred_sensor)
+            xmu_infos.extend(cur_infos)
+
+        if len(xmu_infos) == 0 and self.sensor != 'NotSelected':
+            missing_text = ', '.join(missing_info_paths) if missing_info_paths else 'configured info files are empty'
+            raise FileNotFoundError(
+                'No XMU samples were loaded for mode %s. Missing/empty info files: %s. '
+                'Run tools/cmd_competition.py check-data and make-infos before training.'
+                % (mode, missing_text)
+            )
         
         self.xmu_infos.extend(xmu_infos)
 
-        self.logger.info('Total sequences of sensor %s in mode %s is %d'%(self.sensor, self.mode, len(xmu_infos)))
+        if self.logger is not None:
+            self.logger.info('Total samples of sensor %s in mode %s is %d'%(self.sensor, self.mode, len(xmu_infos)))
 
 
     def get_label(self, idx):
         seq = idx['seq']
         frame = idx['frame']
-        label_file = os.path.join(self.root_path, 'label_ego', 'seq'+seq, '%s.json'%frame.zfill(4))
+        label_root = 'label_ego' if (self.root_path / 'label_ego').exists() else 'label'
+        label_file = os.path.join(self.root_path, label_root, 'seq'+seq, '%s.json'%frame.zfill(4))
         assert Path(label_file).exists(), "label file %s not exists."%label_file
         with open(label_file, 'r') as f:
             label = json.load(f)
@@ -237,8 +262,12 @@ class XMechanismUnmanned(DatasetTemplate):
         
         info = copy.deepcopy(self.xmu_infos[index])
         idx = info['idx']
-        points = self.get_lidar(idx, sensor=self.sensor)
-        assert 'annos' in info, 'no annos in info'
+        item_sensor = info.get('sensor', self.sensor)
+        if item_sensor in (None, 'mixed', 'source_mix', 'NotSelected'):
+            raise ValueError('Cannot determine sensor for sample %s; regenerate infos with the updated CMD code.' % idx)
+        points = self.get_lidar(idx, sensor=item_sensor)
+        boxes_7DoF = None
+        classes = None
         if 'annos' in info:
             annos = info['annos']
             annos = common_utils.drop_info_with_name(annos, name='DontCare')
@@ -256,13 +285,13 @@ class XMechanismUnmanned(DatasetTemplate):
                 boxes_7DoF = boxes_7DoF[existance]
                 classes = classes[existance]
         input_dict = {
-            # 'db_flag': "xmu_%s" % self.sensor,
-            'frame_id': self.sample_idx_list[index],
+            'frame_id': idx,
             'points': points,
-            'calib': self.get_calib(idx=idx, sensor=self.sensor),
-            'gt_boxes': boxes_7DoF,
-            'gt_names': classes,
+            'calib': self.get_calib(idx=idx, sensor=item_sensor),
         }
+        if boxes_7DoF is not None:
+            input_dict['gt_boxes'] = boxes_7DoF
+            input_dict['gt_names'] = classes
 
         # filter empty boxes
 
@@ -406,21 +435,24 @@ class XMechanismUnmanned(DatasetTemplate):
             cameras = ['left', 'front', 'right']
 
     
-            sensor_path =(os.listdir( os.path.join(self.root_path, 'seq'+seq_idx, sensor)))
+            sensor_dir = os.path.join(self.root_path, 'seq'+seq_idx, sensor)
+            if not os.path.isdir(sensor_dir):
+                raise FileNotFoundError('Missing sensor directory: %s' % sensor_dir)
+            sensor_path = os.listdir(sensor_dir)
 
             sensor_path.sort()
             
             
             assert len(sensor_path) == 200, "sequence {} has {} {} frames, rather than 200!".format(seq_idx, len(sensor_path), sensor)
-            image_paths = {camera: [] for camera in cameras}
+            image_paths = {}
             for camera in cameras:
                 image_path = os.path.join(self.root_path, 'seq'+seq_idx, 'camera_'+camera)
-                image_paths[camera] = [os.path.join(self.root_path, 'seq'+seq_idx, 'camera_'+camera, path) for path in os.listdir(os.path.join(self.root_path, 'seq'+seq_idx, 'camera_'+camera))]
-                assert len(image_paths[camera]) == 200, "sequence {} has {} {} frames, rather than 200!".format(seq_idx, len(image_paths[camera]), camera)
+                if os.path.isdir(image_path):
+                    image_paths[camera] = [os.path.join(image_path, path) for path in sorted(os.listdir(image_path))]
+                    assert len(image_paths[camera]) == 200, "sequence {} has {} {} frames, rather than 200!".format(seq_idx, len(image_paths[camera]), camera)
             calibs = {}
             idx = {'seq': seq_idx , 'frame': 0}
-            for sensor1 in sensors:
-                calibs['%s_to_ego' % sensor1] = self.get_calib(idx, sensor1)
+            calibs['%s_to_ego' % sensor] = self.get_calib(idx, sensor)
 
             info = {}
             seq_infos = []
@@ -430,6 +462,7 @@ class XMechanismUnmanned(DatasetTemplate):
                 info['frame'] = str(i).zfill(4)
                 idx = {'seq': info['seq'], 'frame': info['frame']}
                 info['idx'] = idx
+                info['sensor'] = sensor
          
                 info['sensor_paths'] = {}
              
@@ -437,7 +470,7 @@ class XMechanismUnmanned(DatasetTemplate):
                     sensor: sensor_path[i]
                 })
                 info ['image_paths'] = {}
-                for camera in cameras:
+                for camera in image_paths:
                     info['image_paths'].update({
                         camera: image_paths[camera][i]
                     })
@@ -449,7 +482,8 @@ class XMechanismUnmanned(DatasetTemplate):
                 
             
                 if has_lable:
-                    info['label_path'] = os.path.join(self.root_path, 'label_ego', 'seq'+seq_idx, str(i).zfill(4)+'.json')
+                    label_root = 'label_ego' if (self.root_path / 'label_ego').exists() else 'label'
+                    info['label_path'] = os.path.join(self.root_path, label_root, 'seq'+seq_idx, str(i).zfill(4)+'.json')
                     assert os.path.exists(info['label_path']), "the label file {} does not exist!".format(info['label_path'])
                     annotations = {}
                     boxes_7DoF, boxes_9DoF, classes, track_ids, confidences, occulusions, acts, points_num = self.get_label(idx=idx)
@@ -598,6 +632,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='arg parser for xmu dataset')
     parser.add_argument('--cfg_file', type=str, default=None, help='configuration for creating xmu infos')
     parser.add_argument('--func', type=str, default='create_xmu_infos', help='function of creating xmu infos')
+    parser.add_argument('--data_path', type=str, default=None, help='CMD dataset root containing ImageSets/ and seqXX/')
+    parser.add_argument('--sensors', nargs='+', default=['robosense', 'ouster', 'hesai'])
+    parser.add_argument('--workers', type=int, default=4)
     args = parser.parse_args()
     if args.func == 'create_xmu_infos' :
         import yaml
@@ -606,13 +643,14 @@ if __name__ == "__main__":
         dataset_cfg = EasyDict(yaml.safe_load(open(args.cfg_file)))
         assert dataset_cfg.SENSOR == 'NotSelected', 'all the sensor should be generate'
         ROOT_DIR = (Path(__file__).resolve().parent / '../../../').resolve()
-        sensors = ['robosense', 'ouster', 'hesai']
+        data_path = Path(args.data_path).resolve() if args.data_path else ROOT_DIR / 'data' / 'xmu'
         create_xmu_infos(
             dataset_cfg=dataset_cfg,
             class_names=['Car', 'Truck', 'Pedestrian', 'Cyclist'],
-            sensors=sensors,
-            data_path=ROOT_DIR / 'data' / 'xmu',
-            save_path=ROOT_DIR / 'data' / 'xmu', 
+            sensors=args.sensors,
+            data_path=data_path,
+            save_path=data_path,
+            workers=args.workers,
         )
     elif args.func == 'create_groundtruth_database':
         import yaml
@@ -621,18 +659,18 @@ if __name__ == "__main__":
         dataset_cfg = EasyDict(yaml.safe_load(open(args.cfg_file)))
         assert dataset_cfg.SENSOR == 'NotSelected', 'all the sensor should be generate'
         ROOT_DIR = (Path(__file__).resolve().parent / '../../../').resolve()
-        data_path=ROOT_DIR / 'data' / 'xmu',
-        save_path=ROOT_DIR / 'data' / 'xmu', 
+        data_path = Path(args.data_path).resolve() if args.data_path else ROOT_DIR / 'data' / 'xmu'
+        save_path = data_path
         class_names=['Car', 'Truck', 'Pedestrian', 'Cyclist']
         dataset = XMechanismUnmanned(
-            dataset_cfg=dataset_cfg, class_names=class_names, root_path=Path(str(data_path[0])),
+            dataset_cfg=dataset_cfg, class_names=class_names, root_path=data_path,
             training =True, logger=common_utils.create_logger()
         ) 
-        sensors=['robosense', 'ouster', 'hesai']
+        sensors=args.sensors
         train_split, val_split, test_split = 'train', 'val', 'test'
         dataset.set_split(train_split)
         for sensor in sensors:
-            train_filename = os.path.join(Path(str(save_path[0])), 'xmu_infos_%s_%s.pkl'%(train_split,sensor))
+            train_filename = os.path.join(save_path, 'xmu_infos_%s_%s.pkl'%(train_split,sensor))
             dataset.create_groundtruth_database(train_filename, used_classes=class_names, split=train_split,sensor=sensor)
     else:
         raise NotImplementedError

@@ -1,0 +1,86 @@
+DATASET: 'XMechanismUnmanned'
+DATA_PATH: '..'
+
+SENSOR: 'source_mix'
+POINT_CLOUD_RANGE: [0, -75, -2, 75, 75, 4]
+
+TRAINING_CATEGORIES_MAPPING: {
+    'Car': 'Car',
+    'Van': 'Truck',
+    'Tricycle': 'Truck',
+    'Truck': 'Truck',
+    'Bus': 'Truck',
+    'Semi-Trailer towing vehicle': 'Truck',
+    'Special Vehicles': 'Truck',
+    'Ped_adult': 'Pedestrian',
+    'Ped_children': 'Pedestrian',
+    'ByCyc': 'Cyclist',
+    'MotorCyc': 'Cyclist',
+}
+
+DATA_SPLIT: {
+    'train': train,
+    'test': val
+}
+
+# Mix the labelled 128-line and 32-line mechanical LiDAR sources.
+INFO_PATH: {
+    'train': [xmu_infos_train_ouster.pkl, xmu_infos_train_hesai.pkl],
+    'test': [xmu_infos_val_ouster.pkl, xmu_infos_val_hesai.pkl],
+}
+
+POINT_FEATURE_ENCODING: {
+    encoding_type: absolute_coordinates_encoding,
+    used_feature_list: ['x', 'y', 'z', 'intensity'],
+    src_feature_list: ['x', 'y', 'z', 'intensity', 'ring'],
+}
+
+DATA_AUGMENTOR:
+    DISABLE_AUG_LIST: ['placeholder', 'gt_sampling']
+    AUG_CONFIG_LIST:
+        - NAME: gt_sampling
+          USE_ROAD_PLANE: False
+          DB_INFO_PATH: []
+          PREPARE: {}
+          SAMPLE_GROUPS: []
+          NUM_POINT_FEATURES: 5
+          DATABASE_WITH_FAKELIDAR: False
+          REMOVE_EXTRA_WIDTH: [0.0, 0.0, 0.0]
+          LIMIT_WHOLE_SCENE: True
+
+        - NAME: random_lidar_sparsification
+          PROBABILITY: 0.85
+          KEEP_RATIO: [0.45, 0.90]
+          BEAM_KEEP_RATIO: [0.35, 0.90]
+          FAR_KEEP_SCALE: 0.60
+          ELEVATION_BINS: 128
+          MIN_POINTS: 1024
+
+        - NAME: random_world_flip
+          ALONG_AXIS_LIST: ['x']
+
+        - NAME: random_world_rotation
+          WORLD_ROT_ANGLE: [-0.39269908, 0.39269908]
+
+        - NAME: random_world_scaling
+          WORLD_SCALE_RANGE: [0.95, 1.05]
+
+DATA_PROCESSOR:
+    - NAME: mask_points_and_boxes_outside_range
+      REMOVE_OUTSIDE_BOXES: True
+
+    - NAME: remove_boxes_without_points
+
+    - NAME: shuffle_points
+      SHUFFLE_ENABLED: {
+        'train': True,
+        'test': False
+      }
+
+    - NAME: transform_points_to_voxels
+      VOXEL_SIZE: [0.1, 0.1, 0.15]
+      MAX_POINTS_PER_VOXEL: 5
+      MAX_NUMBER_OF_VOXELS: {
+        'train': 150000,
+        'test': 150000
+      }
