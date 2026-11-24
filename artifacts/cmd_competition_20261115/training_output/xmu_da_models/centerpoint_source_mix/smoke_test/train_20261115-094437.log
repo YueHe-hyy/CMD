@@ -1,0 +1,356 @@
+2026-11-15 09:44:37,555   INFO  **********************Start logging**********************
+2026-11-15 09:44:37,555   INFO  CUDA_VISIBLE_DEVICES=3
+2026-11-15 09:44:37,555   INFO  Training in distributed mode : total_batch_size: 4
+2026-11-15 09:44:37,555   INFO  cfg_file         cfgs/xmu_da_models/centerpoint_source_mix.yaml
+2026-11-15 09:44:37,555   INFO  batch_size       4
+2026-11-15 09:44:37,555   INFO  epochs           1
+2026-11-15 09:44:37,555   INFO  workers          4
+2026-11-15 09:44:37,555   INFO  extra_tag        smoke_test
+2026-11-15 09:44:37,555   INFO  ckpt             None
+2026-11-15 09:44:37,555   INFO  pretrained_model None
+2026-11-15 09:44:37,555   INFO  launcher         pytorch
+2026-11-15 09:44:37,555   INFO  tcp_port         18888
+2026-11-15 09:44:37,555   INFO  sync_bn          False
+2026-11-15 09:44:37,555   INFO  fix_random_seed  False
+2026-11-15 09:44:37,555   INFO  ckpt_save_interval 1
+2026-11-15 09:44:37,555   INFO  local_rank       0
+2026-11-15 09:44:37,555   INFO  max_ckpt_save_num 30
+2026-11-15 09:44:37,555   INFO  merge_all_iters_to_one_epoch False
+2026-11-15 09:44:37,555   INFO  set_cfgs         ['DATA_CONFIG.DATA_PATH', '/home/hyy/datasets/CMD', 'OPTIMIZATION.NUM_EPOCHS', '1']
+2026-11-15 09:44:37,556   INFO  max_waiting_mins 0
+2026-11-15 09:44:37,556   INFO  start_epoch      0
+2026-11-15 09:44:37,556   INFO  num_epochs_to_eval 10
+2026-11-15 09:44:37,556   INFO  save_to_file     False
+2026-11-15 09:44:37,556   INFO  use_tqdm_to_record False
+2026-11-15 09:44:37,556   INFO  logger_iter_interval 50
+2026-11-15 09:44:37,556   INFO  ckpt_save_time_interval 300
+2026-11-15 09:44:37,556   INFO  wo_gpu_stat      False
+2026-11-15 09:44:37,556   INFO  use_amp          True
+2026-11-15 09:44:37,556   INFO  cfg.ROOT_DIR: /home/hyy/src/CMD
+2026-11-15 09:44:37,556   INFO  cfg.LOCAL_RANK: 0
+2026-11-15 09:44:37,556   INFO  cfg.CLASS_NAMES: ['Car', 'Truck', 'Pedestrian', 'Cyclist']
+2026-11-15 09:44:37,556   INFO  ----------- DATA_CONFIG -----------
+2026-11-15 09:44:37,556   INFO  cfg.DATA_CONFIG.DATASET: XMechanismUnmanned
+2026-11-15 09:44:37,556   INFO  cfg.DATA_CONFIG.DATA_PATH: /home/hyy/datasets/CMD
+2026-11-15 09:44:37,556   INFO  cfg.DATA_CONFIG.SENSOR: source_mix
+2026-11-15 09:44:37,556   INFO  cfg.DATA_CONFIG.POINT_CLOUD_RANGE: [0, -75, -2, 75, 75, 4]
+2026-11-15 09:44:37,556   INFO  ----------- TRAINING_CATEGORIES_MAPPING -----------
+2026-11-15 09:44:37,556   INFO  cfg.DATA_CONFIG.TRAINING_CATEGORIES_MAPPING.Car: Car
+2026-11-15 09:44:37,556   INFO  cfg.DATA_CONFIG.TRAINING_CATEGORIES_MAPPING.Van: Truck
+2026-11-15 09:44:37,556   INFO  cfg.DATA_CONFIG.TRAINING_CATEGORIES_MAPPING.Tricycle: Truck
+2026-11-15 09:44:37,556   INFO  cfg.DATA_CONFIG.TRAINING_CATEGORIES_MAPPING.Truck: Truck
+2026-11-15 09:44:37,556   INFO  cfg.DATA_CONFIG.TRAINING_CATEGORIES_MAPPING.Bus: Truck
+2026-11-15 09:44:37,556   INFO  cfg.DATA_CONFIG.TRAINING_CATEGORIES_MAPPING.Semi-Trailer towing vehicle: Truck
+2026-11-15 09:44:37,556   INFO  cfg.DATA_CONFIG.TRAINING_CATEGORIES_MAPPING.Special Vehicles: Truck
+2026-11-15 09:44:37,556   INFO  cfg.DATA_CONFIG.TRAINING_CATEGORIES_MAPPING.Ped_adult: Pedestrian
+2026-11-15 09:44:37,556   INFO  cfg.DATA_CONFIG.TRAINING_CATEGORIES_MAPPING.Ped_children: Pedestrian
+2026-11-15 09:44:37,556   INFO  cfg.DATA_CONFIG.TRAINING_CATEGORIES_MAPPING.ByCyc: Cyclist
+2026-11-15 09:44:37,556   INFO  cfg.DATA_CONFIG.TRAINING_CATEGORIES_MAPPING.MotorCyc: Cyclist
+2026-11-15 09:44:37,556   INFO  ----------- DATA_SPLIT -----------
+2026-11-15 09:44:37,556   INFO  cfg.DATA_CONFIG.DATA_SPLIT.train: train
+2026-11-15 09:44:37,556   INFO  cfg.DATA_CONFIG.DATA_SPLIT.test: val
+2026-11-15 09:44:37,556   INFO  ----------- INFO_PATH -----------
+2026-11-15 09:44:37,556   INFO  cfg.DATA_CONFIG.INFO_PATH.train: ['xmu_infos_train_ouster.pkl', 'xmu_infos_train_hesai.pkl']
+2026-11-15 09:44:37,556   INFO  cfg.DATA_CONFIG.INFO_PATH.test: ['xmu_infos_val_ouster.pkl', 'xmu_infos_val_hesai.pkl']
+2026-11-15 09:44:37,556   INFO  ----------- POINT_FEATURE_ENCODING -----------
+2026-11-15 09:44:37,556   INFO  cfg.DATA_CONFIG.POINT_FEATURE_ENCODING.encoding_type: absolute_coordinates_encoding
+2026-11-15 09:44:37,556   INFO  cfg.DATA_CONFIG.POINT_FEATURE_ENCODING.used_feature_list: ['x', 'y', 'z', 'intensity']
+2026-11-15 09:44:37,556   INFO  cfg.DATA_CONFIG.POINT_FEATURE_ENCODING.src_feature_list: ['x', 'y', 'z', 'intensity', 'ring']
+2026-11-15 09:44:37,556   INFO  ----------- DATA_AUGMENTOR -----------
+2026-11-15 09:44:37,556   INFO  cfg.DATA_CONFIG.DATA_AUGMENTOR.DISABLE_AUG_LIST: ['placeholder', 'gt_sampling']
+2026-11-15 09:44:37,556   INFO  cfg.DATA_CONFIG.DATA_AUGMENTOR.AUG_CONFIG_LIST: [{'NAME': 'gt_sampling', 'USE_ROAD_PLANE': False, 'DB_INFO_PATH': [], 'PREPARE': {}, 'SAMPLE_GROUPS': [], 'NUM_POINT_FEATURES': 5, 'DATABASE_WITH_FAKELIDAR': False, 'REMOVE_EXTRA_WIDTH': [0.0, 0.0, 0.0], 'LIMIT_WHOLE_SCENE': True}, {'NAME': 'random_lidar_sparsification', 'PROBABILITY': 0.85, 'KEEP_RATIO': [0.45, 0.9], 'BEAM_KEEP_RATIO': [0.35, 0.9], 'FAR_KEEP_SCALE': 0.6, 'ELEVATION_BINS': 128, 'MIN_POINTS': 1024}, {'NAME': 'random_world_flip', 'ALONG_AXIS_LIST': ['x']}, {'NAME': 'random_world_rotation', 'WORLD_ROT_ANGLE': [-0.39269908, 0.39269908]}, {'NAME': 'random_world_scaling', 'WORLD_SCALE_RANGE': [0.95, 1.05]}]
+2026-11-15 09:44:37,556   INFO  cfg.DATA_CONFIG.DATA_PROCESSOR: [{'NAME': 'mask_points_and_boxes_outside_range', 'REMOVE_OUTSIDE_BOXES': True}, {'NAME': 'remove_boxes_without_points'}, {'NAME': 'shuffle_points', 'SHUFFLE_ENABLED': {'train': True, 'test': False}}, {'NAME': 'transform_points_to_voxels', 'VOXEL_SIZE': [0.1, 0.1, 0.15], 'MAX_POINTS_PER_VOXEL': 5, 'MAX_NUMBER_OF_VOXELS': {'train': 150000, 'test': 150000}}]
+2026-11-15 09:44:37,556   INFO  cfg.DATA_CONFIG._BASE_CONFIG_: cfgs/dataset_configs/xmu/xmu_dataset_source_mix.yaml
+2026-11-15 09:44:37,556   INFO  ----------- MODEL -----------
+2026-11-15 09:44:37,556   INFO  cfg.MODEL.NAME: CenterPoint
+2026-11-15 09:44:37,556   INFO  ----------- VFE -----------
+2026-11-15 09:44:37,556   INFO  cfg.MODEL.VFE.NAME: MeanVFE
+2026-11-15 09:44:37,556   INFO  ----------- BACKBONE_3D -----------
+2026-11-15 09:44:37,556   INFO  cfg.MODEL.BACKBONE_3D.NAME: VoxelResBackBone8x
+2026-11-15 09:44:37,557   INFO  ----------- MAP_TO_BEV -----------
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.MAP_TO_BEV.NAME: HeightCompression
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.MAP_TO_BEV.NUM_BEV_FEATURES: 256
+2026-11-15 09:44:37,557   INFO  ----------- BACKBONE_2D -----------
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.BACKBONE_2D.NAME: BaseBEVBackbone
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.BACKBONE_2D.LAYER_NUMS: [5]
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.BACKBONE_2D.LAYER_STRIDES: [1]
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.BACKBONE_2D.NUM_FILTERS: [128]
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.BACKBONE_2D.UPSAMPLE_STRIDES: [2]
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.BACKBONE_2D.NUM_UPSAMPLE_FILTERS: [256]
+2026-11-15 09:44:37,557   INFO  ----------- DENSE_HEAD -----------
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.DENSE_HEAD.NAME: CenterHead
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.DENSE_HEAD.CLASS_AGNOSTIC: False
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.DENSE_HEAD.CLASS_NAMES_EACH_HEAD: [['Car', 'Truck', 'Pedestrian', 'Cyclist']]
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.DENSE_HEAD.SHARED_CONV_CHANNEL: 64
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.DENSE_HEAD.USE_BIAS_BEFORE_NORM: True
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.DENSE_HEAD.NUM_HM_CONV: 2
+2026-11-15 09:44:37,557   INFO  ----------- SEPARATE_HEAD_CFG -----------
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.DENSE_HEAD.SEPARATE_HEAD_CFG.HEAD_ORDER: ['center', 'center_z', 'dim', 'rot']
+2026-11-15 09:44:37,557   INFO  ----------- HEAD_DICT -----------
+2026-11-15 09:44:37,557   INFO  ----------- center -----------
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.DENSE_HEAD.SEPARATE_HEAD_CFG.HEAD_DICT.center.out_channels: 2
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.DENSE_HEAD.SEPARATE_HEAD_CFG.HEAD_DICT.center.num_conv: 2
+2026-11-15 09:44:37,557   INFO  ----------- center_z -----------
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.DENSE_HEAD.SEPARATE_HEAD_CFG.HEAD_DICT.center_z.out_channels: 1
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.DENSE_HEAD.SEPARATE_HEAD_CFG.HEAD_DICT.center_z.num_conv: 2
+2026-11-15 09:44:37,557   INFO  ----------- dim -----------
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.DENSE_HEAD.SEPARATE_HEAD_CFG.HEAD_DICT.dim.out_channels: 3
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.DENSE_HEAD.SEPARATE_HEAD_CFG.HEAD_DICT.dim.num_conv: 2
+2026-11-15 09:44:37,557   INFO  ----------- rot -----------
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.DENSE_HEAD.SEPARATE_HEAD_CFG.HEAD_DICT.rot.out_channels: 2
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.DENSE_HEAD.SEPARATE_HEAD_CFG.HEAD_DICT.rot.num_conv: 2
+2026-11-15 09:44:37,557   INFO  ----------- TARGET_ASSIGNER_CONFIG -----------
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.DENSE_HEAD.TARGET_ASSIGNER_CONFIG.FEATURE_MAP_STRIDE: 4
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.DENSE_HEAD.TARGET_ASSIGNER_CONFIG.NUM_MAX_OBJS: 500
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.DENSE_HEAD.TARGET_ASSIGNER_CONFIG.GAUSSIAN_OVERLAP: 0.1
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.DENSE_HEAD.TARGET_ASSIGNER_CONFIG.MIN_RADIUS: 2
+2026-11-15 09:44:37,557   INFO  ----------- LOSS_CONFIG -----------
+2026-11-15 09:44:37,557   INFO  ----------- LOSS_WEIGHTS -----------
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.DENSE_HEAD.LOSS_CONFIG.LOSS_WEIGHTS.cls_weight: 1.0
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.DENSE_HEAD.LOSS_CONFIG.LOSS_WEIGHTS.loc_weight: 2.0
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.DENSE_HEAD.LOSS_CONFIG.LOSS_WEIGHTS.code_weights: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+2026-11-15 09:44:37,557   INFO  ----------- POST_PROCESSING -----------
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.DENSE_HEAD.POST_PROCESSING.SCORE_THRESH: 0.05
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.DENSE_HEAD.POST_PROCESSING.POST_CENTER_LIMIT_RANGE: [0, -75, -2, 75, 75, 4]
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.DENSE_HEAD.POST_PROCESSING.MAX_OBJ_PER_SAMPLE: 500
+2026-11-15 09:44:37,557   INFO  ----------- NMS_CONFIG -----------
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.DENSE_HEAD.POST_PROCESSING.NMS_CONFIG.NMS_TYPE: nms_gpu
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.DENSE_HEAD.POST_PROCESSING.NMS_CONFIG.NMS_THRESH: 0.1
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.DENSE_HEAD.POST_PROCESSING.NMS_CONFIG.NMS_PRE_MAXSIZE: 4096
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.DENSE_HEAD.POST_PROCESSING.NMS_CONFIG.NMS_POST_MAXSIZE: 500
+2026-11-15 09:44:37,557   INFO  ----------- POST_PROCESSING -----------
+2026-11-15 09:44:37,557   INFO  cfg.MODEL.POST_PROCESSING.RECALL_THRESH_LIST: [0.3, 0.5, 0.7]
+2026-11-15 09:44:37,558   INFO  cfg.MODEL.POST_PROCESSING.SCORE_THRESH: 0.05
+2026-11-15 09:44:37,558   INFO  cfg.MODEL.POST_PROCESSING.OUTPUT_RAW_SCORE: False
+2026-11-15 09:44:37,558   INFO  cfg.MODEL.POST_PROCESSING.EVAL_METRIC: once
+2026-11-15 09:44:37,558   INFO  ----------- NMS_CONFIG -----------
+2026-11-15 09:44:37,558   INFO  cfg.MODEL.POST_PROCESSING.NMS_CONFIG.MULTI_CLASSES_NMS: False
+2026-11-15 09:44:37,558   INFO  cfg.MODEL.POST_PROCESSING.NMS_CONFIG.NMS_TYPE: nms_gpu
+2026-11-15 09:44:37,558   INFO  cfg.MODEL.POST_PROCESSING.NMS_CONFIG.NMS_THRESH: 0.01
+2026-11-15 09:44:37,558   INFO  cfg.MODEL.POST_PROCESSING.NMS_CONFIG.NMS_PRE_MAXSIZE: 4096
+2026-11-15 09:44:37,558   INFO  cfg.MODEL.POST_PROCESSING.NMS_CONFIG.NMS_POST_MAXSIZE: 500
+2026-11-15 09:44:37,558   INFO  ----------- OPTIMIZATION -----------
+2026-11-15 09:44:37,558   INFO  cfg.OPTIMIZATION.BATCH_SIZE_PER_GPU: 4
+2026-11-15 09:44:37,558   INFO  cfg.OPTIMIZATION.NUM_EPOCHS: 1
+2026-11-15 09:44:37,558   INFO  cfg.OPTIMIZATION.OPTIMIZER: adam_onecycle
+2026-11-15 09:44:37,558   INFO  cfg.OPTIMIZATION.LR: 0.003
+2026-11-15 09:44:37,558   INFO  cfg.OPTIMIZATION.WEIGHT_DECAY: 0.01
+2026-11-15 09:44:37,558   INFO  cfg.OPTIMIZATION.MOMENTUM: 0.9
+2026-11-15 09:44:37,558   INFO  cfg.OPTIMIZATION.MOMS: [0.95, 0.85]
+2026-11-15 09:44:37,558   INFO  cfg.OPTIMIZATION.PCT_START: 0.4
+2026-11-15 09:44:37,558   INFO  cfg.OPTIMIZATION.DIV_FACTOR: 10
+2026-11-15 09:44:37,558   INFO  cfg.OPTIMIZATION.DECAY_STEP_LIST: [35, 45]
+2026-11-15 09:44:37,558   INFO  cfg.OPTIMIZATION.LR_DECAY: 0.1
+2026-11-15 09:44:37,558   INFO  cfg.OPTIMIZATION.LR_CLIP: 1e-07
+2026-11-15 09:44:37,558   INFO  cfg.OPTIMIZATION.LR_WARMUP: False
+2026-11-15 09:44:37,558   INFO  cfg.OPTIMIZATION.WARMUP_EPOCH: 1
+2026-11-15 09:44:37,558   INFO  cfg.OPTIMIZATION.GRAD_NORM_CLIP: 10
+2026-11-15 09:44:37,558   INFO  cfg.TAG: centerpoint_source_mix
+2026-11-15 09:44:37,558   INFO  cfg.EXP_GROUP_PATH: xmu_da_models
+2026-11-15 09:44:37,576   INFO  ----------- Create dataloader & network & optimizer -----------
+2026-11-15 09:44:37,578   INFO  Loading XMU dataset of sensor source_mix and mode train
+2026-11-15 09:44:37,677   INFO  Total samples of sensor source_mix in mode train is 12000
+2026-11-15 09:44:39,186   INFO  ----------- Model CenterPoint created, param count: 4200044 -----------
+2026-11-15 09:44:39,186   INFO  DistributedDataParallel(
+  (module): CenterPoint(
+    (vfe): MeanVFE()
+    (backbone_3d): VoxelResBackBone8x(
+      (conv_input): SparseSequential(
+        (0): SubMConv3d(4, 16, kernel_size=[3, 3, 3], stride=[1, 1, 1], padding=[1, 1, 1], dilation=[1, 1, 1], output_padding=[0, 0, 0], bias=False, algo=ConvAlgo.MaskImplicitGemm)
+        (1): BatchNorm1d(16, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+      (conv1): SparseSequential(
+        (0): SparseBasicBlock(
+          (conv1): SubMConv3d(16, 16, kernel_size=[3, 3, 3], stride=[1, 1, 1], padding=[1, 1, 1], dilation=[1, 1, 1], output_padding=[0, 0, 0], algo=ConvAlgo.MaskImplicitGemm)
+          (bn1): BatchNorm1d(16, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+          (relu): ReLU()
+          (conv2): SubMConv3d(16, 16, kernel_size=[3, 3, 3], stride=[1, 1, 1], padding=[1, 1, 1], dilation=[1, 1, 1], output_padding=[0, 0, 0], algo=ConvAlgo.MaskImplicitGemm)
+          (bn2): BatchNorm1d(16, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        )
+        (1): SparseBasicBlock(
+          (conv1): SubMConv3d(16, 16, kernel_size=[3, 3, 3], stride=[1, 1, 1], padding=[1, 1, 1], dilation=[1, 1, 1], output_padding=[0, 0, 0], algo=ConvAlgo.MaskImplicitGemm)
+          (bn1): BatchNorm1d(16, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+          (relu): ReLU()
+          (conv2): SubMConv3d(16, 16, kernel_size=[3, 3, 3], stride=[1, 1, 1], padding=[1, 1, 1], dilation=[1, 1, 1], output_padding=[0, 0, 0], algo=ConvAlgo.MaskImplicitGemm)
+          (bn2): BatchNorm1d(16, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        )
+      )
+      (conv2): SparseSequential(
+        (0): SparseSequential(
+          (0): SparseConv3d(16, 32, kernel_size=[3, 3, 3], stride=[2, 2, 2], padding=[1, 1, 1], dilation=[1, 1, 1], output_padding=[0, 0, 0], bias=False, algo=ConvAlgo.MaskImplicitGemm)
+          (1): BatchNorm1d(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU()
+        )
+        (1): SparseBasicBlock(
+          (conv1): SubMConv3d(32, 32, kernel_size=[3, 3, 3], stride=[1, 1, 1], padding=[1, 1, 1], dilation=[1, 1, 1], output_padding=[0, 0, 0], algo=ConvAlgo.MaskImplicitGemm)
+          (bn1): BatchNorm1d(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+          (relu): ReLU()
+          (conv2): SubMConv3d(32, 32, kernel_size=[3, 3, 3], stride=[1, 1, 1], padding=[1, 1, 1], dilation=[1, 1, 1], output_padding=[0, 0, 0], algo=ConvAlgo.MaskImplicitGemm)
+          (bn2): BatchNorm1d(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        )
+        (2): SparseBasicBlock(
+          (conv1): SubMConv3d(32, 32, kernel_size=[3, 3, 3], stride=[1, 1, 1], padding=[1, 1, 1], dilation=[1, 1, 1], output_padding=[0, 0, 0], algo=ConvAlgo.MaskImplicitGemm)
+          (bn1): BatchNorm1d(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+          (relu): ReLU()
+          (conv2): SubMConv3d(32, 32, kernel_size=[3, 3, 3], stride=[1, 1, 1], padding=[1, 1, 1], dilation=[1, 1, 1], output_padding=[0, 0, 0], algo=ConvAlgo.MaskImplicitGemm)
+          (bn2): BatchNorm1d(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        )
+      )
+      (conv3): SparseSequential(
+        (0): SparseSequential(
+          (0): SparseConv3d(32, 64, kernel_size=[3, 3, 3], stride=[2, 2, 2], padding=[1, 1, 1], dilation=[1, 1, 1], output_padding=[0, 0, 0], bias=False, algo=ConvAlgo.MaskImplicitGemm)
+          (1): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU()
+        )
+        (1): SparseBasicBlock(
+          (conv1): SubMConv3d(64, 64, kernel_size=[3, 3, 3], stride=[1, 1, 1], padding=[1, 1, 1], dilation=[1, 1, 1], output_padding=[0, 0, 0], algo=ConvAlgo.MaskImplicitGemm)
+          (bn1): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+          (relu): ReLU()
+          (conv2): SubMConv3d(64, 64, kernel_size=[3, 3, 3], stride=[1, 1, 1], padding=[1, 1, 1], dilation=[1, 1, 1], output_padding=[0, 0, 0], algo=ConvAlgo.MaskImplicitGemm)
+          (bn2): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        )
+        (2): SparseBasicBlock(
+          (conv1): SubMConv3d(64, 64, kernel_size=[3, 3, 3], stride=[1, 1, 1], padding=[1, 1, 1], dilation=[1, 1, 1], output_padding=[0, 0, 0], algo=ConvAlgo.MaskImplicitGemm)
+          (bn1): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+          (relu): ReLU()
+          (conv2): SubMConv3d(64, 64, kernel_size=[3, 3, 3], stride=[1, 1, 1], padding=[1, 1, 1], dilation=[1, 1, 1], output_padding=[0, 0, 0], algo=ConvAlgo.MaskImplicitGemm)
+          (bn2): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        )
+      )
+      (conv4): SparseSequential(
+        (0): SparseSequential(
+          (0): SparseConv3d(64, 128, kernel_size=[3, 3, 3], stride=[2, 2, 2], padding=[0, 1, 1], dilation=[1, 1, 1], output_padding=[0, 0, 0], bias=False, algo=ConvAlgo.MaskImplicitGemm)
+          (1): BatchNorm1d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU()
+        )
+        (1): SparseBasicBlock(
+          (conv1): SubMConv3d(128, 128, kernel_size=[3, 3, 3], stride=[1, 1, 1], padding=[1, 1, 1], dilation=[1, 1, 1], output_padding=[0, 0, 0], algo=ConvAlgo.MaskImplicitGemm)
+          (bn1): BatchNorm1d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+          (relu): ReLU()
+          (conv2): SubMConv3d(128, 128, kernel_size=[3, 3, 3], stride=[1, 1, 1], padding=[1, 1, 1], dilation=[1, 1, 1], output_padding=[0, 0, 0], algo=ConvAlgo.MaskImplicitGemm)
+          (bn2): BatchNorm1d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        )
+        (2): SparseBasicBlock(
+          (conv1): SubMConv3d(128, 128, kernel_size=[3, 3, 3], stride=[1, 1, 1], padding=[1, 1, 1], dilation=[1, 1, 1], output_padding=[0, 0, 0], algo=ConvAlgo.MaskImplicitGemm)
+          (bn1): BatchNorm1d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+          (relu): ReLU()
+          (conv2): SubMConv3d(128, 128, kernel_size=[3, 3, 3], stride=[1, 1, 1], padding=[1, 1, 1], dilation=[1, 1, 1], output_padding=[0, 0, 0], algo=ConvAlgo.MaskImplicitGemm)
+          (bn2): BatchNorm1d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        )
+      )
+      (conv_out): SparseSequential(
+        (0): SparseConv3d(128, 128, kernel_size=[3, 1, 1], stride=[2, 1, 1], padding=[0, 0, 0], dilation=[1, 1, 1], output_padding=[0, 0, 0], bias=False, algo=ConvAlgo.MaskImplicitGemm)
+        (1): BatchNorm1d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+    )
+    (map_to_bev_module): HeightCompression()
+    (pfe): None
+    (backbone_2d): BaseBEVBackbone(
+      (blocks): ModuleList(
+        (0): Sequential(
+          (0): ZeroPad2d((1, 1, 1, 1))
+          (1): Conv2d(256, 128, kernel_size=(3, 3), stride=(1, 1), bias=False)
+          (2): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+          (3): ReLU()
+          (4): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (5): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+          (6): ReLU()
+          (7): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (8): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+          (9): ReLU()
+          (10): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (11): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+          (12): ReLU()
+          (13): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (14): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+          (15): ReLU()
+          (16): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (17): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+          (18): ReLU()
+        )
+      )
+      (deblocks): ModuleList(
+        (0): Sequential(
+          (0): ConvTranspose2d(128, 256, kernel_size=(2, 2), stride=(2, 2), bias=False)
+          (1): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+          (2): ReLU()
+        )
+      )
+    )
+    (dense_head): CenterHead(
+      (shared_conv): Sequential(
+        (0): Conv2d(256, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+      (heads_list): ModuleList(
+        (0): SeparateHead(
+          (center): Sequential(
+            (0): Sequential(
+              (0): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+              (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU()
+            )
+            (1): Conv2d(64, 2, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          )
+          (center_z): Sequential(
+            (0): Sequential(
+              (0): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+              (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU()
+            )
+            (1): Conv2d(64, 1, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          )
+          (dim): Sequential(
+            (0): Sequential(
+              (0): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+              (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU()
+            )
+            (1): Conv2d(64, 3, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          )
+          (rot): Sequential(
+            (0): Sequential(
+              (0): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+              (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU()
+            )
+            (1): Conv2d(64, 2, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          )
+          (hm): Sequential(
+            (0): Sequential(
+              (0): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+              (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+              (2): ReLU()
+            )
+            (1): Conv2d(64, 4, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          )
+        )
+      )
+      (hm_loss_func): FocalLossCenterNet()
+      (reg_loss_func): RegLossCenterNet()
+    )
+    (point_head): None
+    (roi_head): None
+  )
+)
+2026-11-15 09:44:39,187   INFO  **********************Start training xmu_da_models/centerpoint_source_mix(smoke_test)**********************
+2026-11-15 09:45:24,325   INFO  Train:    1/1 (100%) [   0/3000 (  0%)]  Loss: inf (inf)  LR: 3.000e-04  Time cost: 00:05/4:29:05 [00:45/4:29:05]  Acc_iter 1           Data time: 0.28(0.28)  Forward time: 5.10(5.10)  Batch time: 5.38(5.38)
+2026-11-15 09:45:29,321   INFO  Train:    1/1 (100%) [  49/3000 (  2%)]  Loss: inf (nan)  LR: 3.111e-04  Time cost: 00:10/10:12 [00:50/10:12]  Acc_iter 50          Data time: 0.00(0.01)  Forward time: 0.10(0.20)  Batch time: 0.10(0.21)
+2026-11-15 09:45:34,290   INFO  Train:    1/1 (100%) [  99/3000 (  3%)]  Loss: inf (nan)  LR: 3.451e-04  Time cost: 00:15/07:25 [00:55/07:25]  Acc_iter 100         Data time: 0.00(0.00)  Forward time: 0.10(0.15)  Batch time: 0.10(0.15)
+2026-11-15 09:45:39,281   INFO  Train:    1/1 (100%) [ 149/3000 (  5%)]  Loss: inf (nan)  LR: 4.014e-04  Time cost: 00:20/06:26 [01:00/06:26]  Acc_iter 150         Data time: 0.00(0.00)  Forward time: 0.11(0.13)  Batch time: 0.11(0.14)
+2026-11-15 09:45:39,532   INFO  
+2026-11-15 09:45:44,516   INFO  Train:    1/1 (100%) [ 199/3000 (  7%)]  Loss: inf (nan)  LR: 4.791e-04  Time cost: 00:25/05:58 [01:05/05:58]  Acc_iter 200         Data time: 0.00(0.00)  Forward time: 0.10(0.12)  Batch time: 0.10(0.13)
+2026-11-15 09:45:49,580   INFO  Train:    1/1 (100%) [ 249/3000 (  8%)]  Loss: inf (nan)  LR: 5.768e-04  Time cost: 00:30/05:37 [01:10/05:37]  Acc_iter 250         Data time: 0.00(0.00)  Forward time: 0.10(0.12)  Batch time: 0.10(0.12)
+2026-11-15 09:45:54,670   INFO  Train:    1/1 (100%) [ 299/3000 ( 10%)]  Loss: inf (nan)  LR: 6.929e-04  Time cost: 00:35/05:21 [01:15/05:21]  Acc_iter 300         Data time: 0.00(0.00)  Forward time: 0.10(0.12)  Batch time: 0.10(0.12)
+2026-11-15 09:45:54,922   INFO  
+2026-11-15 09:46:00,028   INFO  Train:    1/1 (100%) [ 349/3000 ( 12%)]  Loss: inf (nan)  LR: 8.254e-04  Time cost: 00:41/05:11 [01:20/05:11]  Acc_iter 350         Data time: 0.00(0.00)  Forward time: 0.10(0.11)  Batch time: 0.10(0.12)
+2026-11-15 09:46:05,100   INFO  Train:    1/1 (100%) [ 399/3000 ( 13%)]  Loss: inf (nan)  LR: 9.719e-04  Time cost: 00:46/05:00 [01:25/05:00]  Acc_iter 400         Data time: 0.00(0.00)  Forward time: 0.10(0.11)  Batch time: 0.10(0.12)
+2026-11-15 09:46:10,187   INFO  Train:    1/1 (100%) [ 449/3000 ( 15%)]  Loss: inf (nan)  LR: 1.130e-03  Time cost: 00:51/04:50 [01:30/04:50]  Acc_iter 450         Data time: 0.00(0.00)  Forward time: 0.10(0.11)  Batch time: 0.10(0.11)
+2026-11-15 09:46:10,439   INFO  
+2026-11-15 09:46:15,542   INFO  Train:    1/1 (100%) [ 499/3000 ( 17%)]  Loss: inf (nan)  LR: 1.297e-03  Time cost: 00:56/04:43 [01:36/04:43]  Acc_iter 500         Data time: 0.00(0.00)  Forward time: 0.10(0.11)  Batch time: 0.10(0.11)
+2026-11-15 09:46:20,592   INFO  Train:    1/1 (100%) [ 549/3000 ( 18%)]  Loss: inf (nan)  LR: 1.470e-03  Time cost: 01:01/04:34 [01:41/04:34]  Acc_iter 550         Data time: 0.00(0.00)  Forward time: 0.10(0.11)  Batch time: 0.10(0.11)
+2026-11-15 09:46:25,663   INFO  Train:    1/1 (100%) [ 599/3000 ( 20%)]  Loss: inf (nan)  LR: 1.646e-03  Time cost: 01:06/04:26 [01:46/04:26]  Acc_iter 600         Data time: 0.00(0.00)  Forward time: 0.10(0.11)  Batch time: 0.10(0.11)
+2026-11-15 09:46:25,852   INFO  
