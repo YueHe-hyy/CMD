@@ -42,6 +42,8 @@ def draw_scenes(points, gt_boxes=None, ref_boxes=None, ref_labels=None, ref_scor
         gt_boxes = gt_boxes.cpu().numpy()
     if isinstance(ref_boxes, torch.Tensor):
         ref_boxes = ref_boxes.cpu().numpy()
+    if isinstance(ref_labels, torch.Tensor):
+        ref_labels = ref_labels.cpu().numpy()
 
     vis = open3d.visualization.Visualizer()
     vis.create_window()
@@ -106,7 +108,11 @@ def draw_box(vis, gt_boxes, color=(0, 1, 0), ref_labels=None, score=None):
         if ref_labels is None:
             line_set.paint_uniform_color(color)
         else:
-            line_set.paint_uniform_color(box_colormap[ref_labels[i]])
+            # OpenPCDet class labels are 1-based, while Python lists are
+            # 0-based. Keep unknown labels visible with the fallback color.
+            color_index = int(ref_labels[i]) - 1
+            box_color = box_colormap[color_index] if 0 <= color_index < len(box_colormap) else color
+            line_set.paint_uniform_color(box_color)
 
         vis.add_geometry(line_set)
 
